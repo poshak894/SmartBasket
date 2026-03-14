@@ -7,10 +7,11 @@ import { ShoppingCart } from "lucide-react";
 import type { RealtimePostgresChangesPayload } from "@supabase/realtime-js";
 
 import { HiddenFeeBreakdown } from "@/components/compare/hidden-fee-breakdown";
+import { PlatformLogo } from "@/components/compare/platform-logo";
 import { PriceRow } from "@/components/compare/price-row";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { fallbackProductImage } from "@/lib/constants";
+import { amulBrandLogo, fallbackProductImage } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/store/cartStore";
 import { PlatformPrice, ProductWithPrices } from "@/types";
@@ -19,6 +20,7 @@ export function ProductCard({ product, index = 0 }: { product: ProductWithPrices
   const addItem = useCartStore((state) => state.addItem);
   const [prices, setPrices] = useState(product.prices);
   const supabase = useMemo(() => createClient(), []);
+  const productImage = product.id === "amul-butter" ? amulBrandLogo : product.imageUrl ?? fallbackProductImage;
 
   const cheapestPrice = useMemo(() => {
     return [...prices].sort((a, b) => a.totalCost - b.totalCost)[0] ?? prices[0];
@@ -71,7 +73,7 @@ export function ProductCard({ product, index = 0 }: { product: ProductWithPrices
     >
       <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center">
         <div className="relative h-[72px] w-[72px] overflow-hidden rounded-2xl bg-surface-100">
-          <Image src={product.imageUrl ?? fallbackProductImage} alt={product.name} fill className="object-cover" />
+          <Image src={productImage} alt={product.name} fill className="object-contain" />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
@@ -83,12 +85,17 @@ export function ProductCard({ product, index = 0 }: { product: ProductWithPrices
             <Badge variant="warning">Save up to Rs {product.savingsPotential}</Badge>
             <Badge variant="success">Live across 8 platforms</Badge>
           </div>
+          <div className="mt-4 flex items-center gap-2">
+            {prices.slice(0, 8).map((price) => (
+              <PlatformLogo key={price.id} platform={price.platform} size="sm" />
+            ))}
+          </div>
         </div>
       </div>
 
       <div className="grid gap-3 lg:grid-cols-4">
-        {prices.slice(0, 8).map((price) => (
-          <PriceRow key={price.id} price={price} cheapest={price.id === cheapestPrice.id} />
+        {prices.slice(0, 8).map((price, priceIndex) => (
+          <PriceRow key={price.id} price={price} cheapest={price.id === cheapestPrice.id} index={priceIndex} />
         ))}
       </div>
 

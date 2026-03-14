@@ -6,13 +6,13 @@ export const platforms: Array<{ id: Platform; label: string; color: string; etaL
   { id: "INSTAMART", label: "Instamart", color: "#F97316", etaLabel: "14 min" },
   { id: "FLIPKART_MINUTES", label: "Flipkart Minutes", color: "#2563EB", etaLabel: "16 min" },
   { id: "BIGBASKET_NOW", label: "BB Now", color: "#16A34A", etaLabel: "18 min" },
-  { id: "DUNZO_DAILY", label: "Dunzo Daily", color: "#14B8A6", etaLabel: "20 min" },
-  { id: "JIOMART_EXPRESS", label: "JioMart Express", color: "#EF4444", etaLabel: "22 min" },
+  { id: "DUNZO_DAILY", label: "Dmart Express", color: "#14B8A6", etaLabel: "20 min" },
+  { id: "JIOMART_EXPRESS", label: "Jio Mart", color: "#EF4444", etaLabel: "22 min" },
   { id: "AMAZON_FRESH", label: "Amazon Fresh", color: "#111827", etaLabel: "25 min" }
 ];
 
 export const mockProducts: Product[] = [
-  { id: "amul-butter", name: "Amul Butter 500g", brand: "Amul", category: "Dairy", imageUrl: "https://images.unsplash.com/photo-1589985270958-b3f9b7a7fda0?auto=format&fit=crop&w=400&q=80", tags: ["butter", "dairy", "breakfast"] },
+  { id: "amul-butter", name: "Amul Butter 500g", brand: "Amul", category: "Dairy", imageUrl: "/icons/AbLogo.jpeg", tags: ["butter", "dairy", "breakfast"] },
   { id: "maggi-noodles", name: "Maggi 2-Minute Noodles", brand: "Nestle", category: "Snacks", imageUrl: "https://images.unsplash.com/photo-1617093727343-374698b1b08d?auto=format&fit=crop&w=400&q=80", tags: ["instant", "noodles"] },
   { id: "fortune-atta", name: "Fortune Chakki Fresh Atta 5kg", brand: "Fortune", category: "Staples", imageUrl: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=400&q=80", tags: ["atta", "flour"] },
   { id: "dove-shampoo", name: "Dove Intense Repair Shampoo 650ml", brand: "Dove", category: "Personal Care", imageUrl: "https://images.unsplash.com/photo-1526947425960-945c6e72858f?auto=format&fit=crop&w=400&q=80", tags: ["shampoo", "hair care"] }

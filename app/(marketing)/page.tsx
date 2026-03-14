@@ -21,13 +21,13 @@ export default function LandingPage() {
         <section className="container">
           <RevealStagger className="grid gap-4 rounded-[28px] border border-white/70 bg-white/75 p-6 shadow-card backdrop-blur-xl md:grid-cols-3">
             {[
-              ["Rs 847", "Average saved per active user"],
-              ["8", "Platforms checked in real time"],
-              ["2.4M", "Products indexed across dark stores"]
-            ].map(([value, label]) => (
-              <RevealItem key={label} className="rounded-2xl bg-surface-50 p-5">
-                <div className="text-4xl font-black text-brand-500">{value}</div>
-                <div className="mt-2 text-sm text-slate-600">{label}</div>
+              { value: "Rs 847", label: "Average saved per active user", tone: "bg-[#8C5A3C] text-white" },
+              { value: "8", label: "Platforms checked in real time", tone: "bg-[#C08552] text-white" },
+              { value: "2.4M", label: "Products indexed across dark stores", tone: "bg-[#8C5A3C] text-white" }
+            ].map((item) => (
+              <RevealItem key={item.label} className={`rounded-2xl p-5 ${item.tone}`}>
+                <div className="text-4xl font-black">{item.value}</div>
+                <div className="mt-2 text-sm text-white/85">{item.label}</div>
               </RevealItem>
             ))}
           </RevealStagger>
