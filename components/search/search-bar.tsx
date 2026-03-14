@@ -26,15 +26,14 @@ export function SearchBar({ defaultValue = "" }: { defaultValue?: string }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { city } = useLocationStore();
-  const currentQuery = searchParams.get("q") ?? defaultValue;
-  const [query, setQuery] = useState(currentQuery);
+  const [query, setQuery] = useState(defaultValue);
   const [isOpen, setIsOpen] = useState(false);
   const debouncedQuery = useDebouncedValue(query.trim());
   const { data, isFetching } = useSearch(debouncedQuery, city);
 
   useEffect(() => {
-    setQuery(currentQuery);
-  }, [currentQuery]);
+    setQuery(searchParams.get("q") ?? defaultValue);
+  }, [searchParams, defaultValue]);
 
   const products = useMemo<ProductWithPrices[]>(() => data?.products ?? [], [data]);
 

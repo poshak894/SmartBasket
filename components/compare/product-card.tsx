@@ -66,7 +66,7 @@ export function ProductCard({ product, index = 0 }: { product: ProductWithPrices
   return (
     <motion.article
       custom={index}
-      initial={{ opacity: 0, y: 24, scale: 0.97 }}
+      initial={false}
       animate={{ opacity: 1, y: 0, scale: 1, transition: { delay: index * 0.06, duration: 0.4, ease: [0.23, 1, 0.32, 1] } }}
       whileHover={{ y: -3 }}
       className="rounded-[28px] border border-white/70 bg-white/95 p-6 shadow-card backdrop-blur-xl"

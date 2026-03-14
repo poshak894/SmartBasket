@@ -31,13 +31,13 @@ export function Sidebar() {
         </div>
       </div>
 
-      <motion.nav initial="hidden" animate="visible" variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }} className="space-y-2">
+      <motion.nav initial={false} animate="visible" variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }} className="space-y-2">
         {items.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href;
 
           return (
-            <motion.div key={item.href} variants={{ hidden: { opacity: 0, x: -8 }, visible: { opacity: 1, x: 0 } }} whileHover={{ x: 3 }}>
+            <motion.div key={item.href} variants={{ hidden: { opacity: 0, x: -8 }, visible: { opacity: 1, x: 0 } }} initial={false} whileHover={{ x: 3 }}>
               <Link
                 href={item.href}
                 className={cn(
