@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id         String       @id @default(cuid())
+  email      String       @unique
+  name       String?
+  avatarUrl  String?
+  city       String?
+  pincode    String?
+  plan       Plan         @default(FREE)
+  createdAt  DateTime     @default(now())
+  searches   Search[]
+  savedCarts Cart[]
+  alerts     PriceAlert[]
+  savings    SavingsLog[]
+}
+
+model Search {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  query     String
+  city      String?
+  createdAt DateTime @default(now())
+}
+
+model Product {
+  id        String          @id @default(cuid())
+  name      String
+  brand     String?
+  category  String
+  imageUrl  String?
+  barcode   String?         @unique
+  prices    PlatformPrice[]
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+}
+
+model PlatformPrice {
+  id           String   @id @default(cuid())
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id])
+  platform     Platform
+  price        Float
+  mrp          Float
+  deliveryFee  Float    @default(0)
+  platformFee  Float    @default(0)
+  packingFee   Float    @default(0)
+  surgeFee     Float    @default(0)
+  totalCost    Float
+  deliveryMins Int
+  inStock      Boolean  @default(true)
+  pincode      String
+  fetchedAt    DateTime @default(now())
+
+  @@index([productId, platform, pincode])
+}
+
+model Cart {
+  id      String     @id @default(cuid())
+  userId  String
+  user    User       @relation(fields: [userId], references: [id])
+  items   CartItem[]
+  savedAt DateTime   @default(now())
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  cartId    String
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  productId String
+  quantity  Int
+  platform  Platform?
+}
+
+model PriceAlert {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  productId   String
+  platform    Platform?
+  targetPrice Float
+  triggered   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+}
+
+model SavingsLog {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  amount   Float
+  platform Platform
+  category String
+  loggedAt DateTime @default(now())
+}
+
+enum Platform {
+  BLINKIT
+  ZEPTO
+  INSTAMART
+  FLIPKART_MINUTES
+  BIGBASKET_NOW
+  DUNZO_DAILY
+  JIOMART_EXPRESS
+  AMAZON_FRESH
+}
+
+enum Plan {
+  FREE
+  PRO
+  TEAM
+}
