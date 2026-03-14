@@ -2,66 +2,27 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { ShoppingCart } from "lucide-react";
-import type { RealtimePostgresChangesPayload } from "@supabase/realtime-js";
 
 import { HiddenFeeBreakdown } from "@/components/compare/hidden-fee-breakdown";
 import { PlatformLogo } from "@/components/compare/platform-logo";
 import { PriceRow } from "@/components/compare/price-row";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useRealtimePrices } from "@/hooks/useRealtimePrices";
 import { amulBrandLogo, fallbackProductImage } from "@/lib/constants";
-import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/store/cartStore";
-import { PlatformPrice, ProductWithPrices } from "@/types";
+import { ProductWithPrices } from "@/types";
 
 export function ProductCard({ product, index = 0 }: { product: ProductWithPrices; index?: number }) {
   const addItem = useCartStore((state) => state.addItem);
-  const [prices, setPrices] = useState(product.prices);
-  const supabase = useMemo(() => createClient(), []);
+  const { prices, liveSource } = useRealtimePrices(product.id, product.prices, product.prices[0]?.pincode ?? "560001");
   const productImage = product.id === "amul-butter" ? amulBrandLogo : product.imageUrl ?? fallbackProductImage;
 
   const cheapestPrice = useMemo(() => {
     return [...prices].sort((a, b) => a.totalCost - b.totalCost)[0] ?? prices[0];
   }, [prices]);
-
-  useEffect(() => {
-    setPrices(product.prices);
-  }, [product.prices]);
-
-  useEffect(() => {
-    if (!supabase) return;
-
-    const channel = supabase
-      .channel(`platform-price:${product.id}`)
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "PlatformPrice", filter: `productId=eq.${product.id}` },
-        (payload: RealtimePostgresChangesPayload<PlatformPrice>) => {
-          const updated = payload.new as unknown as Partial<PlatformPrice> & { id: string; productId: string };
-          if (!updated?.id) return;
-
-          setPrices((current) => {
-            const exists = current.some((price) => price.id === updated.id);
-            if (exists) {
-              return current.map((price) => (price.id === updated.id ? { ...price, ...updated } : price));
-            }
-
-            if (updated.productId === product.id) {
-              return [...current, updated as PlatformPrice];
-            }
-
-            return current;
-          });
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [product.id, supabase]);
 
   return (
     <motion.article
@@ -84,6 +45,7 @@ export function ProductCard({ product, index = 0 }: { product: ProductWithPrices
           <div className="mt-3 flex flex-wrap gap-2">
             <Badge variant="warning">Save up to Rs {product.savingsPotential}</Badge>
             <Badge variant="success">Live across 8 platforms</Badge>
+            <Badge variant="outline">{liveSource === "supabase" ? "Realtime via Supabase" : liveSource === "sse" ? "Live stream fallback" : "Static snapshot"}</Badge>
           </div>
           <div className="mt-4 flex items-center gap-2">
             {prices.slice(0, 8).map((price) => (

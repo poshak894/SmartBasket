@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # SmartBasket
 
 SmartBasket is a Next.js 14 SaaS starter for comparing real checkout costs across Indian quick-commerce platforms. It includes a marketing site, dashboard shell, Smart Cart optimizer flow, mock-backed API routes, Prisma schema, and testing scaffolding.
@@ -24,6 +23,5 @@ SmartBasket is a Next.js 14 SaaS starter for comparing real checkout costs acros
 
 - Current API routes use seeded mock data so the product is navigable without external credentials.
 - The service clients in `lib/` are ready to be swapped from mocks to live integrations platform by platform.
-=======
-# SmartBasket
->>>>>>> fa0632443a5ede07042d15296494df0965948ca5
+- Realtime UI updates can come from Supabase Realtime or the SSE fallback in `app/api/prices/stream/route.ts`.
+- Platform adapters live in `lib/platforms/` and are controlled by the `ENABLE_*_LIVE_FETCH` env vars in `.env.example`.

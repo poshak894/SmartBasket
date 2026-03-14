@@ -34,19 +34,20 @@ export async function GET(request: NextRequest) {
       const send = (payload: unknown) => controller.enqueue(encoder.encode(toSSE(payload)));
 
       const generateMessage = () => {
+        const platforms = base.platforms.map((price) => {
+          const newPrice = randomizePrice(price.price);
+          const totalCost = Number((newPrice + price.deliveryFee + price.platformFee + price.packingFee + price.surgeFee).toFixed(2));
+          return {
+            ...price,
+            price: newPrice,
+            totalCost,
+            fetchedAt: new Date().toISOString()
+          };
+        });
+
         const next = {
-          ...base,
           updatedAt: new Date().toISOString(),
-          prices: base.platforms.map((price) => {
-            const newPrice = randomizePrice(price.price);
-            const totalCost = Number((newPrice + price.deliveryFee + price.platformFee + price.packingFee + price.surgeFee).toFixed(2));
-            return {
-              ...price,
-              price: newPrice,
-              totalCost,
-              fetchedAt: new Date().toISOString()
-            };
-          })
+          platforms
         };
 
         send(next);
