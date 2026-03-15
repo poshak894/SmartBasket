@@ -4,6 +4,7 @@ import { Loader2, MapPin, Search, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
+import { LocationSelector } from "@/components/location/location-selector";
 import { SearchSuggestions } from "@/components/search/search-suggestions";
 import { Button } from "@/components/ui/button";
 import { useSearch } from "@/hooks/useSearch";
@@ -80,10 +81,7 @@ export function SearchBar({ defaultValue = "" }: { defaultValue?: string }) {
             <X className="h-4 w-4" />
           </button>
         ) : null}
-        <Button type="button" variant="secondary" className="hidden gap-2 md:inline-flex">
-          <MapPin className="h-4 w-4" />
-          {city}
-        </Button>
+        <LocationSelector className="hidden md:block" buttonVariant="secondary" />
         <Button type="submit" className="ml-2 hidden lg:inline-flex">
           Search
         </Button>

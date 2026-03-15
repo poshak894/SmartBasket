@@ -12,6 +12,7 @@
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "prisma:seed": "node prisma/seed.js",
+    "prisma:import:products": "node prisma/import-products-text.js",
     "prisma:migrate": "prisma migrate dev",
     "postinstall": "prisma generate"
   },

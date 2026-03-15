@@ -7,22 +7,37 @@ import { Button } from "@/components/ui/button";
 const tiers = [
   {
     name: "Free",
-    price: "₹0",
+    price: "Rs 0",
     description: "For light price checks",
     features: ["10 comparisons/day", "5 platforms", "Basic savings tracker", "No Smart Cart"]
   },
   {
     name: "Pro",
-    price: "₹99/mo",
+    price: "Rs 99/mo",
     description: "Best for households",
-    features: ["Unlimited comparisons", "All 8 platforms", "Smart Cart Optimizer", "Hidden Price Detector", "10 price alerts", "Full dashboard", "CSV export"],
+    features: [
+      "Unlimited comparisons",
+      "All 8 platforms",
+      "Smart Cart Optimizer",
+      "Hidden Price Detector",
+      "10 price alerts",
+      "Full dashboard",
+      "CSV export"
+    ],
     featured: true
   },
   {
     name: "Team",
-    price: "₹299/mo",
+    price: "Rs 299/mo",
     description: "For families and buying groups",
-    features: ["Everything in Pro", "5 team members", "Shared carts", "API access", "Priority support", "Custom reports"]
+    features: [
+      "Everything in Pro",
+      "5 team members",
+      "Shared carts",
+      "API access",
+      "Priority support",
+      "Custom reports"
+    ]
   }
 ];
 
@@ -38,7 +53,12 @@ export default function PricingPage() {
         </div>
         <div className="mt-14 grid gap-6 lg:grid-cols-3">
           {tiers.map((tier) => (
-            <div key={tier.name} className={`rounded-[32px] border p-8 shadow-card ${tier.featured ? "border-brand-100 bg-brand-50/70 shadow-elevated" : "border-surface-200 bg-white"}`}>
+            <div
+              key={tier.name}
+              className={`rounded-[32px] border p-8 shadow-card ${
+                tier.featured ? "border-brand-100 bg-brand-50/70 shadow-elevated" : "border-surface-200 bg-white"
+              }`}
+            >
               {tier.featured ? <Badge>Most popular</Badge> : null}
               <h2 className="mt-6 text-3xl font-black text-surface-900">{tier.name}</h2>
               <div className="mt-3 text-4xl font-black text-surface-900">{tier.price}</div>

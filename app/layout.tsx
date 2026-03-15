@@ -19,7 +19,13 @@ export const metadata: Metadata = {
   },
   description:
     "Compare real-time prices across Blinkit, Zepto, Instamart, Flipkart Minutes and more. Find the cheapest instant delivery option with Smart Cart optimization and hidden fee detection.",
-  keywords: ["price comparison India", "blinkit vs zepto", "quick commerce comparison", "grocery price compare"],
+  keywords: [
+    "AI grocery assistant India",
+    "quick commerce comparison",
+    "grocery price compare",
+    "blinkit vs zepto",
+    "smart cart optimizer"
+  ],
   openGraph: {
     type: "website",
     locale: "en_IN",

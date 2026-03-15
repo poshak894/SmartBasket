@@ -31,7 +31,7 @@ const bodySchema = z.object({
 
 export async function POST(request: NextRequest) {
   const payload = bodySchema.parse(await request.json());
-  const result = await optimizeCart(payload.items, payload.preferences);
+  const result = await optimizeCart(payload.items, payload.preferences, payload.pincode);
 
   return NextResponse.json(result);
 }

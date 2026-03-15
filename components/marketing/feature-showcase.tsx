@@ -7,10 +7,30 @@ import { Reveal, RevealItem, RevealStagger } from "@/components/ui/reveal";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const features = [
-  { value: "optimizer", title: "Smart Cart Optimizer", icon: Brain, copy: "Split your basket across platforms to cut the total payable amount, not just shelf prices." },
-  { value: "time", title: "Delivery Time vs Price", icon: Clock3, copy: "Tune recommendations for cheaper totals, faster ETAs, or a weighted balance of both." },
-  { value: "dashboard", title: "Savings Dashboard", icon: ChartColumnBig, copy: "Track rupees saved, your strongest platforms, streaks, and category-level wins." },
-  { value: "fees", title: "Hidden Price Detector", icon: ReceiptIndianRupee, copy: "See delivery, platform, packing, and surge fees before you tap checkout." }
+  {
+    value: "optimizer",
+    title: "Smart Cart Optimizer",
+    icon: Brain,
+    copy: "Split your basket across platforms to cut the total payable amount, not just shelf prices."
+  },
+  {
+    value: "time",
+    title: "Delivery Time vs Price",
+    icon: Clock3,
+    copy: "Tune recommendations for cheaper totals, faster ETAs, or a weighted balance of both."
+  },
+  {
+    value: "dashboard",
+    title: "Savings Dashboard",
+    icon: ChartColumnBig,
+    copy: "Track rupees saved, your strongest platforms, streaks, and category-level wins."
+  },
+  {
+    value: "fees",
+    title: "Hidden Price Detector",
+    icon: ReceiptIndianRupee,
+    copy: "See delivery, platform, packing, and surge fees before you tap checkout."
+  }
 ];
 
 const featureCards = [

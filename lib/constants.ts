@@ -1,8 +1,28 @@
 import { Platform } from "@/types";
 
 export const SITE_URL = "https://kartcompare.in";
-export const fallbackProductImage = "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=400&q=80";
+export const fallbackProductImage = "/icons/sbLogo.jpeg";
 export const amulBrandLogo = "/icons/AbLogo.jpeg";
+export const productIcons: Record<string, string> = {
+  "amul-butter": "/icons/AbLogo.jpeg",
+  apple: "/icons/apple.jpeg",
+  "apple-500g": "/icons/apple.jpeg",
+  "headphone-noise-two-bluetooth-headphones": "/icons/headphone.jpeg",
+  "noise-two-bluetooth-headphones": "/icons/headphone.jpeg",
+  "coke-can": "/icons/coke.jpeg",
+  "oreo-strawberry": "/icons/oreo.jpeg",
+  "bikaji-bhujia-1kg": "/icons/bikaji.jpeg",
+  "induction-bajaj-cooktop-1400w": "/icons/induction.jpeg",
+  "bajaj-cooktop-1400w": "/icons/induction.jpeg",
+  "bajaj-almond-drop-95-ml": "/icons/almond.jpeg",
+  "bajaj-almond-drops-95ml": "/icons/almond.jpeg",
+  "milton-water-bottle-1-ltr": "/icons/milton.jpeg",
+  "milton-water-bottle-1ltr": "/icons/milton.jpeg"
+};
+
+export function getProductImage(productId: string, imageUrl?: string | null) {
+  return productIcons[productId] ?? imageUrl ?? fallbackProductImage;
+}
 
 export const platformLabels: Record<Platform, string> = {
   BLINKIT: "Blinkit",

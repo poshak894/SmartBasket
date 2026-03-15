@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma/client";
 import { defaultPincode } from "@/lib/constants";
+import { searchGoogleDiscovery } from "@/lib/google-search/client";
 import { mockProductCatalog, platforms } from "@/lib/mock/data";
 import { amazonFreshProvider } from "@/lib/platforms/amazon-fresh";
 import { bigbasketNowProvider } from "@/lib/platforms/bigbasket-now";
@@ -256,6 +257,19 @@ export async function searchProducts(query: string, city: string) {
     return dbResult;
   }
 
+  try {
+    const googleDiscovery = await searchGoogleDiscovery(query, city);
+    if (googleDiscovery && (googleDiscovery.products.length || googleDiscovery.suggestions.length)) {
+      return {
+        products: googleDiscovery.products,
+        suggestions: googleDiscovery.suggestions,
+        total: googleDiscovery.products.length
+      };
+    }
+  } catch {
+    // Google discovery is optional and should never block the fallback search path.
+  }
+
   return toMockSearch(query, city);
 }
 
@@ -313,11 +327,58 @@ export async function getProductPrices(productId: string, pincode = defaultPinco
   };
 }
 
-export async function optimizeCart(items: CartItem[], preference?: { maxPlatforms?: number; maxWaitMins?: number }): Promise<CartOptimizationResult> {
+async function getCartProducts(productIds: string[], pincode: string): Promise<Map<string, ProductWithPrices>> {
+  const productMap = new Map<string, ProductWithPrices>();
+
+  try {
+    const records = await prisma.product.findMany({
+      where: {
+        id: {
+          in: productIds
+        }
+      },
+      include: {
+        prices: {
+          where: { pincode },
+          orderBy: [{ totalCost: "asc" }]
+        }
+      }
+    });
+
+    for (const record of records) {
+      if (record.prices.length) {
+        productMap.set(record.id, mapProduct(record as PrismaProductRecord));
+      }
+    }
+  } catch {
+    // Keep mock fallback behavior if DB access is unavailable.
+  }
+
+  for (const productId of productIds) {
+    if (!productMap.has(productId)) {
+      const mockProduct = mockProductCatalog.find((entry) => entry.id === productId);
+      if (mockProduct) {
+        productMap.set(productId, mockProduct);
+      }
+    }
+  }
+
+  return productMap;
+}
+
+export async function optimizeCart(
+  items: CartItem[],
+  preference?: { maxPlatforms?: number; maxWaitMins?: number },
+  pincode = defaultPincode
+): Promise<CartOptimizationResult> {
   const maxPlatforms = preference?.maxPlatforms ?? 2;
+  const productMap = await getCartProducts(
+    items.map((item) => item.productId),
+    pincode
+  );
   const selections = items
     .map((item) => {
-      const product = mockProductCatalog.find((entry) => entry.id === item.productId);
+      const product = productMap.get(item.productId);
       const sortedPrices = [...(product?.prices ?? [])]
         .filter((price) => price.inStock && price.deliveryMins <= (preference?.maxWaitMins ?? 35))
         .sort((a, b) => a.totalCost - b.totalCost);

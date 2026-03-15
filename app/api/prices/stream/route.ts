@@ -5,12 +5,6 @@ import { getProductPrices } from "@/lib/platforms";
 
 const UPDATE_INTERVAL_MS = 5000;
 
-function randomizePrice(price: number) {
-  // +/- up to 5% swing to simulate realtime fluctuations
-  const delta = (Math.random() - 0.5) * 0.1;
-  return Number((price * (1 + delta)).toFixed(2));
-}
-
 function toSSE(data: unknown) {
   return `data: ${JSON.stringify(data)}\n\n`;
 }
@@ -24,39 +18,23 @@ export async function GET(request: NextRequest) {
     return new Response(JSON.stringify({ error: "productId is required" }), { status: 400 });
   }
 
-  // Use the mock price generator as the source of truth.
-  const base = await getProductPrices(productId, pincode);
-
   const stream = new ReadableStream({
     start(controller) {
       const encoder = new TextEncoder();
 
       const send = (payload: unknown) => controller.enqueue(encoder.encode(toSSE(payload)));
 
-      const generateMessage = () => {
-        const platforms = base.platforms.map((price) => {
-          const newPrice = randomizePrice(price.price);
-          const totalCost = Number((newPrice + price.deliveryFee + price.platformFee + price.packingFee + price.surgeFee).toFixed(2));
-          return {
-            ...price,
-            price: newPrice,
-            totalCost,
-            fetchedAt: new Date().toISOString()
-          };
-        });
-
-        const next = {
-          updatedAt: new Date().toISOString(),
-          platforms
-        };
-
-        send(next);
+      const generateMessage = async () => {
+        const snapshot = await getProductPrices(productId, pincode);
+        send(snapshot);
       };
 
       // send initial payload immediately
-      generateMessage();
+      void generateMessage();
 
-      const interval = setInterval(generateMessage, UPDATE_INTERVAL_MS);
+      const interval = setInterval(() => {
+        void generateMessage();
+      }, UPDATE_INTERVAL_MS);
 
       request.signal.addEventListener("abort", () => {
         clearInterval(interval);

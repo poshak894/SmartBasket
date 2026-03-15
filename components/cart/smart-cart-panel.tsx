@@ -1,7 +1,8 @@
 "use client";
 
-import { Minus, Plus, Trash2 } from "lucide-react";
-import { useEffect } from "react";
+import { Minus, Plus, Share2, Trash2 } from "lucide-react";
+import { useEffect, useMemo } from "react";
+import { toast } from "sonner";
 
 import { SplitOrderSummary } from "@/components/cart/split-order-summary";
 import { Button } from "@/components/ui/button";
@@ -10,17 +11,33 @@ import { useCartOptimizer } from "@/hooks/useCart";
 import { sampleOptimization } from "@/lib/mock/data";
 import { useCartStore } from "@/store/cartStore";
 import { useLocationStore } from "@/store/locationStore";
+import { useTeamStore } from "@/store/teamStore";
 
 export function SmartCartPanel() {
   const { items, productMap, updateQuantity, removeItem } = useCartStore();
   const { pincode } = useLocationStore();
+  const shareCart = useTeamStore((state) => state.shareCart);
   const optimizer = useCartOptimizer();
+  const cartFingerprint = useMemo(
+    () => JSON.stringify(items.map((item) => ({ productId: item.productId, quantity: item.quantity, preferredPlatform: item.preferredPlatform }))),
+    [items]
+  );
 
   useEffect(() => {
-    if (items.length > 0) {
-      optimizer.mutate({ items, pincode, preferences: { maxPlatforms: 2, maxWaitMins: 30 } });
+    if (!items.length) {
+      return;
     }
-  }, [items, optimizer, pincode]);
+
+    const timer = window.setTimeout(() => {
+      optimizer.mutate({
+        items,
+        pincode,
+        preferences: { maxPlatforms: 2, maxWaitMins: 30 }
+      });
+    }, 300);
+
+    return () => window.clearTimeout(timer);
+  }, [cartFingerprint, items, optimizer.mutate, pincode]);
 
   if (!items.length) {
     return (
@@ -37,7 +54,20 @@ export function SmartCartPanel() {
     <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
       <Card>
         <CardHeader>
-          <CardTitle>Cart Items</CardTitle>
+          <div className="flex items-center justify-between gap-4">
+            <CardTitle>Cart Items</CardTitle>
+            <Button
+              variant="secondary"
+              className="gap-2"
+              onClick={() => {
+                shareCart("Weekly grocery cart", items.reduce((sum, item) => sum + item.quantity, 0));
+                toast.success("Cart shared with your Team workspace.");
+              }}
+            >
+              <Share2 className="h-4 w-4" />
+              Share with team
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           {items.map((item) => {

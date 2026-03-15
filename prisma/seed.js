@@ -8,7 +8,7 @@ const mockProductCatalog = [
     name: "Amul Butter 500g",
     brand: "Amul",
     category: "Dairy",
-    imageUrl: "https://images.unsplash.com/photo-1589985270958-b3f9b7a7fda0?auto=format&fit=crop&w=400&q=80",
+    imageUrl: "/icons/AbLogo.jpeg",
     barcode: null,
     prices: [
       ["BLINKIT", 278, 300, 0, 5, 4, 0, 287, 9],

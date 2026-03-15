@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
+import Logo from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -81,6 +82,9 @@ export function AuthCard({ mode }: { mode: AuthMode }) {
     <main className="container flex min-h-screen items-center justify-center py-16">
       <Card className="w-full max-w-md">
         <CardHeader>
+          <div className="mb-2">
+            <Logo />
+          </div>
           <CardTitle>{title}</CardTitle>
           <CardDescription>{description}</CardDescription>
         </CardHeader>

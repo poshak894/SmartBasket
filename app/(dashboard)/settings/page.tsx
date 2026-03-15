@@ -1,8 +1,23 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+
+import { TeamWorkspace } from "@/components/team/team-workspace";
+import { useLocationStore } from "@/store/locationStore";
 
 export default function SettingsPage() {
+  const { city, pincode, setLocation } = useLocationStore();
+  const [nextCity, setNextCity] = useState(city);
+  const [nextPincode, setNextPincode] = useState(pincode);
+
+  useEffect(() => {
+    setNextCity(city);
+    setNextPincode(pincode);
+  }, [city, pincode]);
+
   return (
     <div className="space-y-6">
       <div>
@@ -14,11 +29,12 @@ export default function SettingsPage() {
           <CardTitle>Profile & preferences</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Input defaultValue="Bengaluru" />
-          <Input defaultValue="560001" />
-          <Button>Save changes</Button>
+          <Input value={nextCity} onChange={(event) => setNextCity(event.target.value)} />
+          <Input value={nextPincode} onChange={(event) => setNextPincode(event.target.value)} />
+          <Button onClick={() => setLocation(nextCity.trim() || city, nextPincode.trim() || pincode)}>Save changes</Button>
         </CardContent>
       </Card>
+      <TeamWorkspace />
     </div>
   );
 }
